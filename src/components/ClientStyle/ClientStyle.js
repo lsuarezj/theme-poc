@@ -30,7 +30,6 @@ export default class ClientStyle extends Component {
   }
 
   render() {
-    console.log("going render");
     if (!this.isReady && isDOMReady()) {
       appendStyle(idCache[this.props.css], this.props.css);
     }
