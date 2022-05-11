@@ -38,8 +38,6 @@ function App() {
   color: #000;
   }`);
 
-  const [customCssSecondLevel, setcustomCssSecondLevel] = useState("");
-
   const theme = createTheme({
     palette: {
       primary: {
@@ -71,7 +69,6 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Style css={customCss} />
-      <Style css={customCssSecondLevel} />
       <StyledEngineProvider injectFirst>
         <main>
           <MyForm></MyForm>
