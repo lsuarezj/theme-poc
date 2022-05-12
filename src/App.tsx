@@ -2,6 +2,8 @@ import React, { useMemo, useState } from "react";
 import "./App.css";
 import {
   createTheme,
+  CssBaseline,
+  Grid,
   StyledEngineProvider,
   ThemeProvider,
 } from "@mui/material";
@@ -11,32 +13,13 @@ import Editor from "@monaco-editor/react";
 import ClientStyle from "./components/ClientStyle/ClientStyle";
 import debounce from "lodash.debounce";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// import { Style } from "react-style-tag";
+
 function App() {
-  const [customCss, setcustomCss] = useState(`.MuiSlider-colorPrimary {
-  color: #1c4f4c;
-}
-
-.MuiSlider-colorSecondary {
-  color: #f707ef;
-}
-
-.MuiSlider-colorPrimary:hover {
-  color: #b4bf32;
-}
-
-.MuiSlider-colorSecondary:hover {
-  color: #0dd8e3;
-}
-
-.MuiButton-containedPrimary {
-  color: #fff;
-  background-color: green;
-}
-
-.MuiButton-containedPrimary:hover {
-  background-color: grey;
-  color: #000;
-  }`);
+  const [customCssTheme, setcustomCssTheme] = useState(``);
+  const [customCssComponents, setcustomCssComponents] = useState(``);
 
   const theme = createTheme({
     palette: {
@@ -47,14 +30,20 @@ function App() {
         main: green[500],
       },
     },
+    // components: {
+    //   MuiCssBaseline: {
+    //     styleOverrides: customCssTheme,
+    //   },
+    // },
   });
 
-  const setWrapper = (value: string) => {
+  const setWrapper = (value: string, callback: Function) => {
     // console.log(value);
-    setcustomCss(value);
+    // setcustomCssTheme(value);
+    callback(value);
   };
 
-  const debouncedSetCustomCss = useMemo(() => {
+  const debouncedSetCustomCssTheme = useMemo(() => {
     return debounce(setWrapper, 500);
   }, []);
 
@@ -68,28 +57,66 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Style css={customCss} />
+      <CssBaseline />
+      <Style css={customCssTheme} />
+      <Style css={customCssComponents} />
       <StyledEngineProvider injectFirst>
         <main>
-          <MyForm></MyForm>
-          <label>Override Theme:</label>
-          <Editor
-            height="400px"
-            width="50%"
-            language="css"
-            onChange={(value, event) => {
-              debouncedSetCustomCss(value as string);
-            }}
-            value={customCss}
-            theme="vs-dark"
-            options={{
-              minimap: {
-                enabled: false,
-              },
-              colorDecorators: true,
-              lineNumbers: "on",
-            }}
-          />
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <MyForm></MyForm>
+            </Grid>
+            <Grid item xs={4}>
+              <div>
+                <label>Override Theme:</label>
+                <Editor
+                  height="400px"
+                  width="100%"
+                  language="css"
+                  onChange={(value, event) => {
+                    debouncedSetCustomCssTheme(
+                      value as string,
+                      setcustomCssTheme
+                    );
+                  }}
+                  value={customCssTheme}
+                  theme="vs-dark"
+                  options={{
+                    minimap: {
+                      enabled: false,
+                    },
+                    colorDecorators: true,
+                    lineNumbers: "on",
+                  }}
+                />
+              </div>
+            </Grid>
+            <Grid item xs={4}>
+              <div>
+                <label>Craete Component General:</label>
+                <Editor
+                  height="400px"
+                  width="100%"
+                  language="css"
+                  onChange={(value, event) => {
+                    debouncedSetCustomCssTheme(
+                      value as string,
+                      setcustomCssComponents
+                    );
+                  }}
+                  value={customCssComponents}
+                  theme="vs-dark"
+                  options={{
+                    minimap: {
+                      enabled: false,
+                    },
+                    colorDecorators: true,
+                    lineNumbers: "on",
+                  }}
+                />
+              </div>
+            </Grid>
+          </Grid>
         </main>
       </StyledEngineProvider>
     </ThemeProvider>
